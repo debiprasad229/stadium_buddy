@@ -1,0 +1,140 @@
+:root {
+  /* Font Families */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Global Animations & Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 30px;
+  --radius-full: 9999px;
+
+  /* Shadow Design */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 15px rgba(0, 242, 254, 0.3);
+
+  /* Layout Constants */
+  --header-height: 72px;
+  --sidebar-width: 280px;
+
+  /* ========================================================
+     DARK MODE (Default: Sleek, Futuristic command center theme)
+     ======================================================== */
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #131a30;
+  --bg-tertiary: #1b2545;
+  --bg-glass: rgba(19, 26, 48, 0.65);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-focus: #00f2fe;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --primary: #00f2fe;
+  --primary-rgb: 0, 242, 254;
+  --primary-hover: #4facfe;
+  --secondary: #a18cd1;
+  --secondary-hover: #fbc2eb;
+  
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.1);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.1);
+  --info: #3b82f6;
+  --info-bg: rgba(59, 130, 246, 0.1);
+
+  --gradient-primary: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  --gradient-accent: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  --gradient-dark: linear-gradient(180deg, #0a0e1a 0%, #05070d 100%);
+}
+
+/* ========================================================
+   LIGHT MODE (Clean, Bright, Energetic theme)
+   ======================================================== */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --border-color: #e2e8f0;
+  --border-focus: #4facfe;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --primary: #2563eb;
+  --primary-rgb: 37, 99, 235;
+  --primary-hover: #1d4ed8;
+  --secondary: #7c3aed;
+  --secondary-hover: #6d28d9;
+
+  --success: #059669;
+  --success-bg: rgba(5, 150, 105, 0.08);
+  --warning: #d97706;
+  --warning-bg: rgba(217, 119, 6, 0.08);
+  --danger: #dc2626;
+  --danger-bg: rgba(220, 38, 38, 0.08);
+  --info: #2563eb;
+  --info-bg: rgba(37, 99, 235, 0.08);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.1);
+  --shadow-glow: 0 0 15px rgba(37, 99, 235, 0.15);
+
+  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --gradient-accent: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  --gradient-dark: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* ========================================================
+   HIGH CONTRAST MODE (WCAG AAA AAA AAA Compliant)
+   ======================================================== */
+[data-theme="high-contrast"] {
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #121212;
+  --bg-glass: #000000;
+  --border-color: #ffffff;
+  --border-focus: #ffff00; /* Neon Yellow */
+
+  --text-primary: #ffffff;
+  --text-secondary: #ffffff;
+  --text-muted: #e5e5e5;
+
+  --primary: #ffff00;
+  --primary-rgb: 255, 255, 0;
+  --primary-hover: #ffff00;
+  --secondary: #00ffff; /* Neon Cyan */
+  --secondary-hover: #00ffff;
+
+  --success: #00ff00; /* Pure Green */
+  --success-bg: transparent;
+  --warning: #ffff00; /* Pure Yellow */
+  --warning-bg: transparent;
+  --danger: #ff0000; /* Pure Red */
+  --danger-bg: transparent;
+  --info: #00ffff;
+  --info-bg: transparent;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-glow: none;
+
+  --gradient-primary: none;
+  --gradient-accent: none;
+  --gradient-dark: none;
+}
