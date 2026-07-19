@@ -9,7 +9,13 @@ interface AIChatbotProps {
   t: (key: any) => string;
 }
 
-export const AIChatbot: React.FC<AIChatbotProps> = ({ currentLang, t }) => {
+/**
+ * AIChatbot Component
+ * Implements a multilingual virtual assistant using Gemini 3.0 Flash.
+ * Allows stadium fans to ask questions and receive dynamic answers in real-time.
+ * Wrapped in React.memo for render efficiency.
+ */
+const AIChatbotComponent: React.FC<AIChatbotProps> = ({ currentLang, t }) => {
   const { messages, loading, sendMessage, clearChat } = useGemini(currentLang);
   const [inputText, setInputText] = useState('');
   
@@ -198,3 +204,8 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ currentLang, t }) => {
     </div>
   );
 };
+
+export const AIChatbot = React.memo(AIChatbotComponent);
+AIChatbot.displayName = 'AIChatbot';
+
+

@@ -57,7 +57,12 @@ interface IncidentManagerProps {
   t: (key: any) => string;
 }
 
-export const IncidentManager: React.FC<IncidentManagerProps> = ({ currentLang, t }) => {
+/**
+ * IncidentManager Component
+ * Handles reporting, assignment, and status tracking for stadium incidents and volunteers.
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent telemetry updates.
+ */
+const IncidentManagerComponent: React.FC<IncidentManagerProps> = ({ currentLang, t }) => {
   const [incidents, setIncidents] = useState<Incident[]>(INITIAL_INCIDENTS);
   const [volunteers, setVolunteers] = useState<Volunteer[]>(INITIAL_VOLUNTEERS);
   
@@ -481,3 +486,8 @@ export const IncidentManager: React.FC<IncidentManagerProps> = ({ currentLang, t
     </div>
   );
 };
+
+export const IncidentManager = React.memo(IncidentManagerComponent);
+IncidentManager.displayName = 'IncidentManager';
+
+

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { validateCupBarcode } from '../../utils/validation';
-import { Leaf, Award, Recycle, Check, AlertCircle } from 'lucide-react';
+import { Leaf, Award, Recycle, Check, AlertCircle, Cpu, Send } from 'lucide-react';
 import { getTranslatedReward } from '../../utils/translations';
 import type { Language } from '../../utils/translations';
 
@@ -9,11 +9,22 @@ interface GreenTrackerProps {
   t: (key: any) => string;
 }
 
-export const GreenTracker: React.FC<GreenTrackerProps> = ({ currentLang, t }) => {
+/**
+ * GreenTracker Component
+ * Tracks fan Green Points, environmental savings, and rewards milestone progression.
+ * Includes a barcode scanner simulator and a Gemini-powered Eco-Advisor assistant.
+ * Wrapped in React.memo for render efficiency.
+ */
+const GreenTrackerComponent: React.FC<GreenTrackerProps> = ({ currentLang, t }) => {
   const [points, setPoints] = useState(20); // Initial mock points
   const [barcodeInput, setBarcodeInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  
+  // AI Eco-Advisor State
+  const [ecoQuery, setEcoQuery] = useState('');
+  const [ecoAnswer, setEcoAnswer] = useState<string | null>(null);
+  const [ecoLoading, setEcoLoading] = useState(false);
   
   // Eco stats
   const plasticRecycled = (points / 10) * 15; // 15g per cup
@@ -43,6 +54,37 @@ export const GreenTracker: React.FC<GreenTrackerProps> = ({ currentLang, t }) =>
     setSuccess(null);
   };
 
+  const handleEcoSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ecoQuery.trim() || ecoLoading) return;
+    setEcoLoading(true);
+    setEcoAnswer(null);
+    try {
+      const response = await fetch('/api/eco', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          query: ecoQuery,
+          currentLang
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('API server returned an error.');
+      }
+
+      const resData = await response.json();
+      setEcoAnswer(resData.text || '');
+    } catch (err: any) {
+      console.error('Eco-Advisor Error:', err);
+      setEcoAnswer(currentLang === 'es' ? 'Lo siento, no pude contactar al asesor ecológico en este momento.' : currentLang === 'fr' ? 'Désolé, impossible de contacter l\'éco-conseiller.' : 'Sorry, could not connect to the Eco-Advisor right now.');
+    } finally {
+      setEcoLoading(false);
+    }
+  };
+
   // Rewards checkpoints
   const rewards = [
     { name: 'FIFA Eco-Coaster', target: 30 },
@@ -51,7 +93,7 @@ export const GreenTracker: React.FC<GreenTrackerProps> = ({ currentLang, t }) =>
   ];
 
   return (
-    <div className="glass-panel green-tracker-grid" style={{ padding: '20px', display: 'grid', gap: '20px' }}>
+    <div className="glass-panel green-tracker-grid p-lg gap-lg">
       
       {/* Points & Stats Dashboard */}
       <div>
@@ -64,7 +106,7 @@ export const GreenTracker: React.FC<GreenTrackerProps> = ({ currentLang, t }) =>
         </p>
 
         {/* Big Points Circular Indicator */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px', background: 'var(--bg-secondary)', padding: '15px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+        <div className="flex-row gap-lg" style={{ marginBottom: '20px', background: 'var(--bg-secondary)', padding: '15px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', alignItems: 'center' }}>
           <div style={{
             width: '70px',
             height: '70px',
@@ -215,8 +257,71 @@ export const GreenTracker: React.FC<GreenTrackerProps> = ({ currentLang, t }) =>
             </div>
           )}
         </form>
+
+        {/* AI Eco-Advisor panel */}
+        <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid var(--border-color)' }}>
+          <h4 style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Cpu size={16} style={{ color: 'var(--success)' }} />
+            {currentLang === 'es' ? 'Asesor Ecológico IA' : currentLang === 'fr' ? 'Conseiller Éco IA' : 'AI Eco-Advisor'}
+          </h4>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
+            {currentLang === 'es' 
+              ? 'Pregunta sobre reglas de reciclaje o iniciativas sostenibles del estadio.'
+              : currentLang === 'fr'
+              ? 'Posez des questions sur le recyclage et la durabilité du stade.'
+              : 'Ask about MetLife Stadium waste recycling or carbon offset programs.'}
+          </p>
+
+          <form onSubmit={handleEcoSubmit} style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+            <input
+              type="text"
+              placeholder={currentLang === 'es' ? '¿Cómo reciclo botellas?' : currentLang === 'fr' ? 'Comment recycler ?' : 'Can I recycle food packaging?'}
+              value={ecoQuery}
+              onChange={(e) => setEcoQuery(e.target.value)}
+              style={{
+                flex: 1,
+                padding: '8px 12px',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-primary)',
+                fontSize: '0.8rem'
+              }}
+              required
+            />
+            <button
+              type="submit"
+              disabled={ecoLoading || !ecoQuery.trim()}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--success)',
+                color: '#000',
+                fontWeight: 'bold',
+                fontSize: '0.8rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              {ecoLoading ? <Cpu size={14} className="animate-pulse" /> : <Send size={14} />}
+            </button>
+          </form>
+
+          {ecoAnswer && (
+            <div style={{ background: 'var(--success-bg)', border: '1px solid var(--success)', borderRadius: 'var(--radius-sm)', padding: '10px', fontSize: '0.8rem', color: 'var(--text-primary)', lineHeight: '1.4' }}>
+              {ecoAnswer}
+            </div>
+          )}
+        </div>
       </div>
 
     </div>
   );
 };
+
+export const GreenTracker = React.memo(GreenTrackerComponent);
+GreenTracker.displayName = 'GreenTracker';
+
+

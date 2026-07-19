@@ -12,18 +12,24 @@ interface LiveMetricsProps {
   t: (key: any) => string;
 }
 
-export const LiveMetrics: React.FC<LiveMetricsProps> = ({ telemetry, triggerSimRefresh, t }) => {
+/**
+ * LiveMetrics Component
+ * Renders live telemetry tiles for stadium crowd count, energy grid load, and gate flow rate.
+ * Wrapped in React.memo to prevent redundant re-renders unless props change.
+ */
+export const LiveMetrics: React.FC<LiveMetricsProps> = React.memo(({ telemetry, triggerSimRefresh, t }) => {
   const crowdPercent = Math.min(100, Math.round((telemetry.crowdCount / telemetry.capacity) * 100));
 
   return (
-    <div className="glass-panel" style={{ padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div className="glass-panel p-lg">
+      <div className="flex-between" style={{ marginBottom: '15px' }}>
+        <h3 className="flex-center" style={{ gap: '8px' }}>
           <Compass style={{ color: 'var(--primary)' }} />
           {t('opsMetricsTitle')}
         </h3>
         <button
           onClick={triggerSimRefresh}
+          className="flex-center gap-sm"
           style={{
             padding: '6px 12px',
             borderRadius: 'var(--radius-sm)',
@@ -31,9 +37,6 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({ telemetry, triggerSimR
             border: '1px solid var(--border-color)',
             color: 'var(--text-primary)',
             fontSize: '0.8rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
             transition: 'background var(--transition-fast)'
           }}
           aria-label="Refresh Telemetry Data"
@@ -43,10 +46,10 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({ telemetry, triggerSimR
         </button>
       </div>
 
-      <div className="telemetry-tiles-grid" style={{ display: 'grid', gap: '15px', marginBottom: '20px' }}>
+      <div className="telemetry-tiles-grid" style={{ marginBottom: '20px' }}>
         {/* Crowd Density Tile */}
-        <div style={{ background: 'var(--bg-secondary)', padding: '15px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div className="p-md flex-col" style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <div className="flex-between" style={{ marginBottom: '8px' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('densityLabel')}</span>
             <Users size={16} style={{ color: 'var(--primary)' }} />
           </div>
@@ -62,8 +65,8 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({ telemetry, triggerSimR
         </div>
 
         {/* Energy Saving/Usage Tile */}
-        <div style={{ background: 'var(--bg-secondary)', padding: '15px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div className="p-md flex-col" style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <div className="flex-between" style={{ marginBottom: '8px' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('energyLabel')}</span>
             <Zap size={16} style={{ color: 'var(--warning)' }} />
           </div>
@@ -76,8 +79,8 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({ telemetry, triggerSimR
         </div>
 
         {/* Gate Entrance Flow Rate Tile */}
-        <div style={{ background: 'var(--bg-secondary)', padding: '15px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div className="p-md flex-col" style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <div className="flex-between" style={{ marginBottom: '8px' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('gateFlowLabel')}</span>
             <Compass size={16} style={{ color: 'var(--secondary)' }} />
           </div>
@@ -91,9 +94,9 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({ telemetry, triggerSimR
       </div>
 
       {/* SVG Telemetry Mini-Graph */}
-      <div>
+      <div className="flex-col">
         <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>Inflow Traffic Load (Last 5 mins)</h4>
-        <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '10px' }}>
+        <div className="p-sm" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)' }}>
           <svg viewBox="0 0 400 100" style={{ width: '100%', height: 'auto', display: 'block' }}>
             {/* Grid Lines */}
             <line x1="0" y1="20" x2="400" y2="20" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="4 4" />
@@ -122,4 +125,7 @@ export const LiveMetrics: React.FC<LiveMetricsProps> = ({ telemetry, triggerSimR
       </div>
     </div>
   );
-};
+});
+
+LiveMetrics.displayName = 'LiveMetrics';
+

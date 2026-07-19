@@ -63,7 +63,12 @@ interface SmartQueueProps {
   t: (key: any) => string;
 }
 
-export const SmartQueue: React.FC<SmartQueueProps> = ({ currentLang, t }) => {
+/**
+ * SmartQueue Component
+ * Manages concession stand selection, menu pre-ordering, and simulated queue length wait times.
+ * Wrapped in React.memo for component optimization.
+ */
+const SmartQueueComponent: React.FC<SmartQueueProps> = ({ currentLang, t }) => {
   const [selectedStand, setSelectedStand] = useState<ConcessionStand>(CONCESSIONS[0]);
   const [customerName, setCustomerName] = useState('');
   const [seatLocation, setSeatLocation] = useState('');
@@ -376,6 +381,12 @@ export const SmartQueue: React.FC<SmartQueueProps> = ({ currentLang, t }) => {
           </div>
         )}
       </div>
+
     </div>
   );
 };
+
+export const SmartQueue = React.memo(SmartQueueComponent);
+SmartQueue.displayName = 'SmartQueue';
+
+

@@ -24,7 +24,13 @@ interface GenAICopilotProps {
   t: (key: any) => string;
 }
 
-export const GenAICopilot: React.FC<GenAICopilotProps> = ({ telemetry, currentLang, t }) => {
+/**
+ * GenAICopilot Component
+ * Monitors live stadium telemetry in the background and runs real-time Gemini AI analysis
+ * to generate proactive recommendations for stadium operations managers.
+ * Wrapped in React.memo to optimize re-render performance.
+ */
+const GenAICopilotComponent: React.FC<GenAICopilotProps> = ({ telemetry, currentLang, t }) => {
   const [recommendations, setRecommendations] = useState<CopilotRecommendation[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [speechActive, setSpeechActive] = useState<string | null>(null);
@@ -360,3 +366,8 @@ export const GenAICopilot: React.FC<GenAICopilotProps> = ({ telemetry, currentLa
     </div>
   );
 };
+
+export const GenAICopilot = React.memo(GenAICopilotComponent);
+GenAICopilot.displayName = 'GenAICopilot';
+
+

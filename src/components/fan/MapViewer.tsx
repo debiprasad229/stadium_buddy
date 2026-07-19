@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigation, Info, Volume2, VolumeX } from 'lucide-react';
+import { Navigation, Info, Volume2, VolumeX, Cpu } from 'lucide-react';
 import { getTranslatedRouteStep, getTranslatedGate, getTranslatedSection } from '../../utils/translations';
 import type { Language } from '../../utils/translations';
 import { speakText, stopSpeech } from '../../utils/speech';
@@ -17,11 +17,19 @@ interface MapViewerProps {
 const GATES = ['Gate A (North)', 'Gate B (East)', 'Gate C (South)', 'Gate D (West)'];
 const SECTIONS = ['Section 101', 'Section 102', 'Section 103', 'Section 104', 'Section 105', 'Section 106'];
 
-export const MapViewer: React.FC<MapViewerProps> = ({ currentLang, t }) => {
+/**
+ * MapViewer Component
+ * Renders the stadium blueprint SVG and calculates routes from Ticket Gates to Seat Sections.
+ * Integrates real-time Gemini-guided navigation for crowd-aware step-by-step directions.
+ * Wrapped in React.memo for rendering performance.
+ */
+const MapViewerComponent: React.FC<MapViewerProps> = ({ currentLang, t }) => {
   const [selectedGate, setSelectedGate] = useState(GATES[0]);
   const [selectedSection, setSelectedSection] = useState(SECTIONS[0]);
   const [routeSteps, setRouteSteps] = useState<RouteStep[]>([]);
   const [activeStepIndex, setActiveStepIndex] = useState<number | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   // SVG Coordinates for drawing the path (Center is 150, 150)
   const getCoordinates = () => {
@@ -67,12 +75,55 @@ export const MapViewer: React.FC<MapViewerProps> = ({ currentLang, t }) => {
     setActiveStepIndex(0);
   };
 
+  const handleAiRouteCalculation = async () => {
+    setIsAiLoading(true);
+    setAiError(null);
+    try {
+      const response = await fetch('/api/navigation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          gate: selectedGate,
+          section: selectedSection,
+          currentLang
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('API server returned an error.');
+      }
+
+      let text = await response.text();
+      text = text.trim();
+      
+      if (text.startsWith('```')) {
+        text = text.replace(/^```(json)?/, '').replace(/```$/, '').trim();
+      }
+      
+      const parsed = JSON.parse(text) as RouteStep[];
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        setRouteSteps(parsed);
+        setActiveStepIndex(0);
+        return;
+      }
+      throw new Error('Invalid routing structure returned.');
+    } catch (err: any) {
+      console.error('AI Navigation Error, falling back to static calculation:', err);
+      setAiError(currentLang === 'es' ? 'Error al obtener ruta de IA. Usando ruta fija.' : currentLang === 'fr' ? 'Échec itinéraire IA. Utilisation itinéraire standard.' : 'AI routing failed. Using standard route.');
+      handleRouteCalculation();
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   const { gate, section } = getCoordinates();
 
   return (
-    <div className="glass-panel map-viewer-grid" style={{ padding: '20px', display: 'grid', gap: '20px' }}>
+    <div className="glass-panel map-viewer-grid p-lg gap-lg">
       {/* Stadium Seating Chart Canvas */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="flex-col" style={{ alignItems: 'center' }}>
         <h3 style={{ marginBottom: '15px', alignSelf: 'flex-start' }}>{t('blueprintTitle')}</h3>
         <div style={{ position: 'relative', width: '100%', maxWidth: '340px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '15px' }}>
           <svg viewBox="0 0 300 300" style={{ width: '100%', height: 'auto' }}>
@@ -132,7 +183,7 @@ export const MapViewer: React.FC<MapViewerProps> = ({ currentLang, t }) => {
       </div>
 
       {/* Inputs & Navigation Route Directions */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <div className="flex-col gap-md">
         <h3>{t('calculatorTitle')}</h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
@@ -193,24 +244,57 @@ export const MapViewer: React.FC<MapViewerProps> = ({ currentLang, t }) => {
           </div>
         </div>
 
-        <button
-          onClick={handleRouteCalculation}
-          style={{
-            padding: '10px',
-            borderRadius: 'var(--radius-sm)',
-            background: 'var(--primary)',
-            color: '#000',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            transition: 'transform var(--transition-fast)'
-          }}
-        >
-          <Navigation size={16} />
-          {t('findSeatButton')}
-        </button>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+          <button
+            onClick={handleRouteCalculation}
+            style={{
+              padding: '10px',
+              borderRadius: 'var(--radius-sm)',
+              background: 'var(--bg-tertiary)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-color)',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'transform var(--transition-fast)'
+            }}
+          >
+            <Navigation size={16} />
+            {t('findSeatButton')}
+          </button>
+
+          <button
+            onClick={handleAiRouteCalculation}
+            disabled={isAiLoading}
+            style={{
+              padding: '10px',
+              borderRadius: 'var(--radius-sm)',
+              background: 'var(--primary)',
+              color: '#000',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'transform var(--transition-fast)',
+              opacity: isAiLoading ? 0.7 : 1,
+              cursor: isAiLoading ? 'not-allowed' : 'pointer'
+            }}
+          >
+            <Cpu size={16} className={isAiLoading ? 'animate-pulse' : ''} />
+            {isAiLoading 
+              ? (currentLang === 'es' ? 'Calculando...' : currentLang === 'fr' ? 'Calcul...' : 'Calculating...')
+              : (currentLang === 'es' ? 'Ruta de IA' : currentLang === 'fr' ? 'Itinéraire IA' : 'AI-Optimized Route')}
+          </button>
+        </div>
+
+        {aiError && (
+          <div style={{ fontSize: '0.75rem', color: 'var(--danger)', marginTop: '4px' }}>
+            ⚠️ {aiError}
+          </div>
+        )}
 
         {routeSteps.length > 0 && (
           <div style={{ marginTop: '5px' }}>
@@ -306,6 +390,12 @@ export const MapViewer: React.FC<MapViewerProps> = ({ currentLang, t }) => {
           </div>
         )}
       </div>
+
     </div>
   );
 };
+
+export const MapViewer = React.memo(MapViewerComponent);
+MapViewer.displayName = 'MapViewer';
+
+

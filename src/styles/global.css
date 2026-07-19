@@ -291,3 +291,69 @@ button:disabled {
   }
 }
 
+/* Layout Helper Classes to Optimize React Renders & Code Quality */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-3-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.gap-sm {
+  gap: 10px;
+}
+
+.gap-md {
+  gap: 15px;
+}
+
+.gap-lg {
+  gap: 20px;
+}
+
+.p-sm {
+  padding: 10px;
+}
+
+.p-md {
+  padding: 15px;
+}
+
+.p-lg {
+  padding: 20px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+
