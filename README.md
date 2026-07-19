@@ -2,6 +2,8 @@
 
 **ArenaOS 2026** is a comprehensive, next-generation stadium management and fan engagement platform built for the FIFA World Cup 2026. Designed specifically for massive-scale live events (showcasing MetLife Stadium), ArenaOS bridges the gap between premium fan experiences and real-time operational command using cutting-edge Generative AI.
 
+🌍 **Live Demo:** [https://stadium-buddy-one.vercel.app/](https://stadium-buddy-one.vercel.app/)
+
 ---
 
 ## ✨ Key Features
