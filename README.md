@@ -8,7 +8,7 @@
 
 ### 👤 Fan Experience Hub
 A mobile-first, smart digital companion for fans inside the stadium:
-- **FIFA Smart Assistant:** A live AI chatbot powered by the **Google Gemini 3.5 Flash** model that answers fan questions in real-time (multilingual support for English, Spanish, and French).
+- **FIFA Smart Assistant:** A live AI chatbot powered by the **Google Gemini 3.0 Flash** model that answers fan questions in real-time (multilingual support for English, Spanish, and French).
 - **Interactive MapViewer:** Gate-to-seat navigation with dynamic SVG stadium blueprints, live route calculation, and Text-to-Speech (TTS) directions.
 - **Express Concessions (SmartQueue):** In-seat food and beverage pre-ordering system that validates seat locations, calculates wait times, and provides live status updates.
 - **GreenTracker:** A gamified sustainability dashboard that rewards fans with "Green Points" (GP) for recycling their eco-cups via barcode scanning.
@@ -26,7 +26,7 @@ A high-contrast, data-dense control panel for stadium staff and dispatchers:
 - **Frontend:** React 18, TypeScript, Vite
 - **Styling:** Vanilla CSS, CSS Variables, Responsive Grid/Flexbox Layouts, Glassmorphism UI
 - **Icons:** Lucide React
-- **AI Integration:** Google Generative Language API (`v1beta`) powered by the **Gemini-3.5-Flash** model.
+- **AI Integration:** Google Generative Language API (`v1beta`) powered by the **Gemini-3.0-Flash** model.
 - **Backend Architecture:** A secure server-side proxy handles all Gemini API requests, ensuring client-side security and preventing API key exposure. 
 
 ---
