@@ -1,7 +1,14 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi, beforeAll, afterAll } from 'vitest';
 import { sanitizeInput, generateMockToken, validateSessionToken } from '../src/utils/security';
 
 describe('Security Utilities', () => {
+  beforeAll(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    vi.restoreAllMocks();
+  });
   test('sanitizeInput should escape dangerous HTML tags and characters', () => {
     const rawInput = '<script>alert("hack")</script>';
     const sanitized = sanitizeInput(rawInput);

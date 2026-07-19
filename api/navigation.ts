@@ -1,4 +1,21 @@
-export default async function handler(req: any, res: any) {
+import type { IncomingMessage } from 'http';
+
+interface NavigationRequest extends IncomingMessage {
+  body: {
+    gate?: string;
+    section?: string;
+    currentLang?: string;
+  };
+}
+
+interface NavigationResponse {
+  status: (code: number) => NavigationResponse;
+  send: (data: string) => void;
+  json: (data: { error?: string }) => void;
+  setHeader: (name: string, value: string[]) => NavigationResponse;
+}
+
+export default async function handler(req: NavigationRequest, res: NavigationResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: `Method ${req.method} not allowed` });
@@ -49,8 +66,9 @@ Return ONLY a valid JSON array matching this exact structure:
     const responseText = resData.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
 
     return res.status(200).send(responseText);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Secure Navigation Serverless API Error:', error);
-    return res.status(500).json({ error: error.message || 'Error generating navigation recommendations' });
+    const message = error instanceof Error ? error.message : 'Error generating navigation recommendations';
+    return res.status(500).json({ error: message });
   }
 }

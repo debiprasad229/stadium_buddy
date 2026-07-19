@@ -1,4 +1,25 @@
-export default async function handler(req: any, res: any) {
+import type { IncomingMessage } from 'http';
+
+interface CopilotRequest extends IncomingMessage {
+  body: {
+    telemetry?: {
+      crowdCount?: number;
+      capacity?: number;
+      energyUsage?: number;
+      gateFlow?: number;
+    };
+    currentLang?: string;
+  };
+}
+
+interface CopilotResponse {
+  status: (code: number) => CopilotResponse;
+  send: (data: string) => void;
+  json: (data: { error?: string }) => void;
+  setHeader: (name: string, value: string[]) => CopilotResponse;
+}
+
+export default async function handler(req: CopilotRequest, res: CopilotResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: `Method ${req.method} not allowed` });
@@ -54,8 +75,9 @@ Return ONLY a valid JSON array matching this exact structure:
     const responseText = resData.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
 
     return res.status(200).send(responseText);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Secure Copilot Serverless API Error:', error);
-    return res.status(500).json({ error: error.message || 'Error generating Copilot recommendations' });
+    const message = error instanceof Error ? error.message : 'Error generating Copilot recommendations';
+    return res.status(500).json({ error: message });
   }
 }

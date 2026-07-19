@@ -1,4 +1,19 @@
-export default async function handler(req: any, res: any) {
+import type { IncomingMessage } from 'http';
+
+interface EcoRequest extends IncomingMessage {
+  body: {
+    query?: string;
+    currentLang?: string;
+  };
+}
+
+interface EcoResponse {
+  status: (code: number) => EcoResponse;
+  json: (data: { text?: string; error?: string }) => void;
+  setHeader: (name: string, value: string[]) => EcoResponse;
+}
+
+export default async function handler(req: EcoRequest, res: EcoResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: `Method ${req.method} not allowed` });
@@ -38,8 +53,9 @@ AI Response:`;
     const responseText = resData.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     return res.status(200).json({ text: responseText });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Secure Eco Serverless API Error:', error);
-    return res.status(500).json({ error: error.message || 'Error generating Eco-Advisor response' });
+    const message = error instanceof Error ? error.message : 'Error generating Eco-Advisor response';
+    return res.status(500).json({ error: message });
   }
 }

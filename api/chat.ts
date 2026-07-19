@@ -1,4 +1,19 @@
-export default async function handler(req: any, res: any) {
+import type { IncomingMessage } from 'http';
+
+interface ChatRequest extends IncomingMessage {
+  body: {
+    messages?: Array<{ role: string; text: string }>;
+    currentLang?: string;
+  };
+}
+
+interface ChatResponse {
+  status: (code: number) => ChatResponse;
+  json: (data: { text?: string; error?: string }) => void;
+  setHeader: (name: string, value: string[]) => ChatResponse;
+}
+
+export default async function handler(req: ChatRequest, res: ChatResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: `Method ${req.method} not allowed` });
@@ -39,8 +54,9 @@ AI:`;
     const responseText = resData.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     return res.status(200).json({ text: responseText });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Secure Serverless API Error:', error);
-    return res.status(500).json({ error: error.message || 'Error generating AI content response' });
+    const message = error instanceof Error ? error.message : 'Error generating AI content response';
+    return res.status(500).json({ error: message });
   }
 }
