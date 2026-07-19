@@ -54,6 +54,7 @@ AI Response:`;
 
     return res.status(200).json({ text: responseText });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Secure Eco Serverless API Error:', error);
     const message = error instanceof Error ? error.message : 'Error generating Eco-Advisor response';
     return res.status(500).json({ error: message });

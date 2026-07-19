@@ -4,9 +4,11 @@ import type { Language } from '../../utils/translations';
 import { Send, Trash2, Cpu, Volume2 } from 'lucide-react';
 import { speakText } from '../../utils/speech';
 
+import { translations } from '../../utils/translations';
+
 interface AIChatbotProps {
   currentLang: Language;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 /**

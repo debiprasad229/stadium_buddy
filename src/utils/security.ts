@@ -44,11 +44,13 @@ export function validateSessionToken(token: string): SecureSession | null {
     if (!token) return null;
     const decoded = JSON.parse(atob(token)) as SecureSession;
     if (decoded.exp < Date.now()) {
+      // eslint-disable-next-line no-console
       console.warn('Session expired');
       return null;
     }
     return decoded;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Invalid token payload', error);
     return null;
   }

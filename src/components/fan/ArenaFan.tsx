@@ -6,9 +6,11 @@ import { GreenTracker } from './GreenTracker';
 import type { Language } from '../../utils/translations';
 import { Sparkles, Calendar, MapPin } from 'lucide-react';
 
+import { translations } from '../../utils/translations';
+
 interface ArenaFanProps {
   currentLang: Language;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 export const ArenaFan: React.FC<ArenaFanProps> = ({ currentLang, t }) => {

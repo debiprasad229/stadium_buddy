@@ -4,9 +4,11 @@ import { Leaf, Award, Recycle, Check, AlertCircle, Cpu, Send } from 'lucide-reac
 import { getTranslatedReward } from '../../utils/translations';
 import type { Language } from '../../utils/translations';
 
+import { translations } from '../../utils/translations';
+
 interface GreenTrackerProps {
   currentLang: Language;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 /**
@@ -77,7 +79,8 @@ const GreenTrackerComponent: React.FC<GreenTrackerProps> = ({ currentLang, t }) 
 
       const resData = await response.json();
       setEcoAnswer(resData.text || '');
-    } catch (err: any) {
+    } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('Eco-Advisor Error:', err);
       setEcoAnswer(currentLang === 'es' ? 'Lo siento, no pude contactar al asesor ecológico en este momento.' : currentLang === 'fr' ? 'Désolé, impossible de contacter l\'éco-conseiller.' : 'Sorry, could not connect to the Eco-Advisor right now.');
     } finally {

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Users, Zap, Compass, RefreshCw } from 'lucide-react';
 
+import { translations } from '../../utils/translations';
+
 interface LiveMetricsProps {
   telemetry: {
     crowdCount: number;
@@ -9,7 +11,7 @@ interface LiveMetricsProps {
     gateFlow: number; // people/min
   };
   triggerSimRefresh: () => void;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 /**

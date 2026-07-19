@@ -76,6 +76,7 @@ Return ONLY a valid JSON array matching this exact structure:
 
     return res.status(200).send(responseText);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Secure Copilot Serverless API Error:', error);
     const message = error instanceof Error ? error.message : 'Error generating Copilot recommendations';
     return res.status(500).json({ error: message });

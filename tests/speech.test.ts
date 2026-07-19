@@ -1,14 +1,39 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { speakText, stopSpeech } from '../src/utils/speech';
 
+interface MockVoice {
+  lang: string;
+  name: string;
+}
+
+interface MockSpeechSynthesis {
+  speak: (utterance: { text: string; lang: string; voice: MockVoice | null; pitch: number; rate: number }) => void;
+  cancel: () => void;
+  getVoices: () => MockVoice[];
+}
+
+interface GlobalWithMock {
+  window: {
+    speechSynthesis?: MockSpeechSynthesis;
+  };
+  SpeechSynthesisUtterance?: new (text: string) => {
+    text: string;
+    lang: string;
+    voice: MockVoice | null;
+    pitch: number;
+    rate: number;
+  };
+}
+
 describe('Speech Synthesis Utilities', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
   test('speakText does not crash when window.speechSynthesis is undefined', () => {
-    const originalSpeechSynthesis = (global as any).window.speechSynthesis;
-    delete (global as any).window.speechSynthesis;
+    const targetGlobal = globalThis as unknown as GlobalWithMock;
+    const originalSpeechSynthesis = targetGlobal.window.speechSynthesis;
+    delete targetGlobal.window.speechSynthesis;
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -16,7 +41,7 @@ describe('Speech Synthesis Utilities', () => {
     expect(warnSpy).toHaveBeenCalledWith('Speech synthesis is not supported in this environment.');
 
     if (originalSpeechSynthesis) {
-      (global as any).window.speechSynthesis = originalSpeechSynthesis;
+      targetGlobal.window.speechSynthesis = originalSpeechSynthesis;
     }
   });
 
@@ -28,7 +53,8 @@ describe('Speech Synthesis Utilities', () => {
       { lang: 'es-MX', name: 'Voice 2' }
     ]);
 
-    (global as any).window.speechSynthesis = {
+    const targetGlobal = globalThis as unknown as GlobalWithMock;
+    targetGlobal.window.speechSynthesis = {
       speak: mockSpeak,
       cancel: mockCancel,
       getVoices: mockGetVoices
@@ -37,14 +63,14 @@ describe('Speech Synthesis Utilities', () => {
     class MockSpeechSynthesisUtterance {
       text: string;
       lang: string = '';
-      voice: any = null;
+      voice: MockVoice | null = null;
       pitch: number = 1;
       rate: number = 1;
       constructor(text: string) {
         this.text = text;
       }
     }
-    (global as any).SpeechSynthesisUtterance = MockSpeechSynthesisUtterance as any;
+    targetGlobal.SpeechSynthesisUtterance = MockSpeechSynthesisUtterance as unknown as GlobalWithMock['SpeechSynthesisUtterance'];
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -57,8 +83,11 @@ describe('Speech Synthesis Utilities', () => {
 
   test('stopSpeech cancels current playback', () => {
     const mockCancel = vi.fn();
-    (global as any).window.speechSynthesis = {
-      cancel: mockCancel
+    const targetGlobal = globalThis as unknown as GlobalWithMock;
+    targetGlobal.window.speechSynthesis = {
+      speak: vi.fn(),
+      cancel: mockCancel,
+      getVoices: vi.fn().mockReturnValue([])
     };
 
     stopSpeech();

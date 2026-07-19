@@ -58,9 +58,11 @@ const CONCESSIONS: ConcessionStand[] = [
   }
 ];
 
+import { translations } from '../../utils/translations';
+
 interface SmartQueueProps {
   currentLang: Language;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 /**
@@ -103,7 +105,7 @@ const SmartQueueComponent: React.FC<SmartQueueProps> = ({ currentLang, t }) => {
     });
 
     if (!validation.isValid) {
-      setError(validation.error ? t(validation.error as any) : t('orderValidationError'));
+      setError(validation.error ? t(validation.error as keyof typeof translations['en']) : t('orderValidationError'));
       return;
     }
 

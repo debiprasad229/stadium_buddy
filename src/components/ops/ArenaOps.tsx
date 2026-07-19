@@ -6,9 +6,11 @@ import { ShieldCheck, Server, Activity } from 'lucide-react';
 
 import type { Language } from '../../utils/translations';
 
+import { translations } from '../../utils/translations';
+
 interface ArenaOpsProps {
   currentLang: Language;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 export const ArenaOps: React.FC<ArenaOpsProps> = ({ currentLang, t }) => {

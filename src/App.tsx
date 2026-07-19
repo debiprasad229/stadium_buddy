@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './hooks/useLanguage';
+import type { Language } from './utils/translations';
 import { ArenaFan } from './components/fan/ArenaFan';
 import { ArenaOps } from './components/ops/ArenaOps';
 import { Eye, Languages, User, ShieldAlert, Cpu } from 'lucide-react';
@@ -94,7 +95,7 @@ function App() {
             <select
               id="lang-nav-select"
               value={language}
-              onChange={(e) => setLanguage(e.target.value as any)}
+              onChange={(e) => setLanguage(e.target.value as Language)}
               style={{
                 background: 'transparent',
                 border: 'none',

@@ -9,6 +9,7 @@ import type { Language } from './translations';
  */
 export function speakText(text: string, lang: Language): void {
   if (typeof window === 'undefined' || !window.speechSynthesis) {
+    // eslint-disable-next-line no-console
     console.warn('Speech synthesis is not supported in this environment.');
     return;
   }

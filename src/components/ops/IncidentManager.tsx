@@ -52,9 +52,11 @@ const INITIAL_INCIDENTS: Incident[] = [
   }
 ];
 
+import { translations } from '../../utils/translations';
+
 interface IncidentManagerProps {
   currentLang: Language;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 /**
@@ -236,7 +238,7 @@ const IncidentManagerComponent: React.FC<IncidentManagerProps> = ({ currentLang,
               <select
                 id="inc-type"
                 value={type}
-                onChange={(e) => setType(e.target.value as any)}
+                onChange={(e) => setType(e.target.value as 'Medical' | 'Logistics' | 'Crowding' | 'Facility' | 'Safety')}
                 style={{
                   width: '100%',
                   padding: '8px',
@@ -286,7 +288,7 @@ const IncidentManagerComponent: React.FC<IncidentManagerProps> = ({ currentLang,
               <select
                 id="inc-sev"
                 value={severity}
-                onChange={(e) => setSeverity(e.target.value as any)}
+                onChange={(e) => setSeverity(e.target.value as 'Low' | 'Medium' | 'High' | 'Critical')}
                 style={{
                   width: '100%',
                   padding: '8px',

@@ -24,18 +24,18 @@ describe('AI Endpoint Handlers', () => {
   function createMockResponse() {
     let responseStatus = 200;
     let responseHeaders: Record<string, string[]> = {};
-    let responseData: any = null;
+    let responseData: string | object | null = null;
 
     const res = {
       status(code: number) {
         responseStatus = code;
         return this;
       },
-      send(data: any) {
+      send(data: string) {
         responseData = data;
         return this;
       },
-      json(data: any) {
+      json(data: object) {
         responseData = data;
         return this;
       },

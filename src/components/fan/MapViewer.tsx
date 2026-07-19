@@ -9,9 +9,11 @@ interface RouteStep {
   distance: string;
 }
 
+import { translations } from '../../utils/translations';
+
 interface MapViewerProps {
   currentLang: Language;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 const GATES = ['Gate A (North)', 'Gate B (East)', 'Gate C (South)', 'Gate D (West)'];
@@ -109,7 +111,8 @@ const MapViewerComponent: React.FC<MapViewerProps> = ({ currentLang, t }) => {
         return;
       }
       throw new Error('Invalid routing structure returned.');
-    } catch (err: any) {
+    } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('AI Navigation Error, falling back to static calculation:', err);
       setAiError(currentLang === 'es' ? 'Error al obtener ruta de IA. Usando ruta fija.' : currentLang === 'fr' ? 'Échec itinéraire IA. Utilisation itinéraire standard.' : 'AI routing failed. Using standard route.');
       handleRouteCalculation();

@@ -53,7 +53,8 @@ export function useGemini(currentLang: Language) {
 
       const data = await response.json();
       setMessages((prev) => [...prev, { role: 'model', text: data.text }]);
-    } catch (error: any) {
+    } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Gemini API Error:', error);
       const errorMsg = currentLang === 'es' 
         ? 'Error al conectar con la IA de Gemini. Por favor, comprueba tu clave API.' 

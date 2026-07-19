@@ -32,7 +32,7 @@ You are helping fans and tournament staff inside the stadium.
 Respond in the language matching code "${currentLang}".
 Keep responses helpful, precise, action-oriented, and less than 4 sentences.
 Here is the chat history:
-${messages.map((m: any) => `${m.role === 'user' ? 'Fan' : 'AI'}: ${m.text}`).join('\n')}
+${messages.map((m: { role: string; text: string }) => `${m.role === 'user' ? 'Fan' : 'AI'}: ${m.text}`).join('\n')}
 AI:`;
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
@@ -55,6 +55,7 @@ AI:`;
 
     return res.status(200).json({ text: responseText });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Secure Serverless API Error:', error);
     const message = error instanceof Error ? error.message : 'Error generating AI content response';
     return res.status(500).json({ error: message });

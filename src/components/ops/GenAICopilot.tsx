@@ -13,6 +13,8 @@ interface CopilotRecommendation {
   applied: boolean;
 }
 
+import { translations } from '../../utils/translations';
+
 interface GenAICopilotProps {
   telemetry: {
     crowdCount: number;
@@ -21,7 +23,7 @@ interface GenAICopilotProps {
     gateFlow: number;
   };
   currentLang: Language;
-  t: (key: any) => string;
+  t: (key: keyof typeof translations['en']) => string;
 }
 
 /**
@@ -74,6 +76,7 @@ const GenAICopilotComponent: React.FC<GenAICopilotProps> = ({ telemetry, current
         return;
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Gemini Copilot API Error, falling back to local recommendations:', error);
     }
 
